@@ -1,0 +1,90 @@
+<CompuCell3D Revision="20140926" Version="3.7.3">
+   
+   <Potts>
+     <Dimensions x="320" y="320" z="1"/>
+      <Steps>10000</Steps>
+      <FluctuationAmplitude>20.0</FluctuationAmplitude>
+      <NeighborOrder>2</NeighborOrder>
+   </Potts>
+   
+   <Plugin Name="CellType">
+      <CellType TypeId="0" TypeName="Medium"/>
+      <CellType TypeId="1" TypeName="PGC"/>
+      <CellType Freeze="" TypeId="2" TypeName="signal"/>
+      <CellType Freeze="" TypeId="3" TypeName="hindgut"/>
+      <CellType TypeId="4" TypeName="ECM"/>
+      <CellType Freeze="" TypeId="5" TypeName="yolk"/>
+   </Plugin>
+   
+   <Plugin Name="Volume">
+      <VolumeEnergyParameters CellType="PGC" LambdaVolume="1.0" TargetVolume="6.0"/>
+      <VolumeEnergyParameters CellType="ECM" LambdaVolume="1.0" TargetVolume="5.0"/>
+      <VolumeEnergyParameters CellType="Medium" LambdaVolume="1.0" TargetVolume="5.0"/>
+      <VolumeEnergyParameters CellType="signal" LambdaVolume="1.0" TargetVolume="5.0"/>
+      <VolumeEnergyParameters CellType="yolk" LambdaVolume="1.0" TargetVolume="5.0"/>
+      <VolumeEnergyParameters CellType="hindgut" LambdaVolume="1.0" TargetVolume="5.0"/>
+   </Plugin>
+
+   <Plugin Name="CenterOfMass"></Plugin>
+
+    <Plugin Name="Surface">
+        <SurfaceEnergyParameters CellType="PGC" LambdaSurface="1.0" TargetSurface="35"/>
+        <SurfaceEnergyParameters CellType="ECM" LambdaSurface="1.0" TargetSurface="35"/>
+        <SurfaceEnergyParameters CellType="hindgut" LambdaSurface="1.0" TargetSurface="35"/>
+        <SurfaceEnergyParameters CellType="signal" LambdaSurface="1.0" TargetSurface="35"/>
+        <SurfaceEnergyParameters CellType="yolk" LambdaSurface="1.0" TargetSurface="35"/>
+        <SurfaceEnergyParameters CellType="Medium" LambdaSurface="1.0" TargetSurface="35"/>
+    </Plugin>
+
+   <Plugin Name="Contact">
+      <Energy Type1="Medium" Type2="Medium">100.0</Energy>
+      <Energy Type1="Medium" Type2="PGC">100.0</Energy>
+      <Energy Type1="Medium" Type2="ECM">100.0</Energy>
+      <Energy Type1="Medium" Type2="hindgut">150.0</Energy>
+      <Energy Type1="Medium" Type2="signal">150.0</Energy>
+      <Energy Type1="Medium" Type2="yolk">100.0</Energy>
+      <Energy Type1="PGC" Type2="PGC">150.0</Energy>
+      <Energy Type1="PGC" Type2="ECM">100.0</Energy>
+      <Energy Type1="PGC" Type2="hindgut">120.0</Energy>
+      <Energy Type1="PGC" Type2="signal">120.0</Energy> <!--was at 5-->
+      <Energy Type1="PGC" Type2="yolk">150.0</Energy>
+      <Energy Type1="ECM" Type2="ECM">100.0</Energy>
+      <Energy Type1="ECM" Type2="hindgut">150.0</Energy>
+      <Energy Type1="ECM" Type2="signal">150.0</Energy>
+      <Energy Type1="ECM" Type2="yolk">100.0</Energy>
+      <Energy Type1="hindgut" Type2="hindgut">100.0</Energy>
+      <Energy Type1="hindgut" Type2="signal">100.0</Energy>
+      <Energy Type1="hindgut" Type2="yolk">100.0</Energy>
+      <Energy Type1="signal" Type2="signal">100.0</Energy>
+      <Energy Type1="signal" Type2="yolk">100.0</Energy>
+      <Energy Type1="yolk" Type2="yolk">100.0</Energy>
+      <NeighborOrder>2</NeighborOrder>
+   </Plugin>
+   
+   <Plugin Name="Chemotaxis">
+      <ChemicalField Name="ckit" Source="FlexibleDiffusionSolverFE">
+         <ChemotaxisByType Lambda="1" Type="PGC"/>
+      </ChemicalField>
+   </Plugin>
+   
+    <Plugin Name="Secretion">
+        <Field Name="ckit">
+<!--           <Secretion Type="signal"></Secretion>  -->
+      </Field> 
+    </Plugin> 
+   
+   <Steppable Type="FlexibleDiffusionSolverFE">
+      <DiffusionField Name="ckit">
+         <DiffusionData>
+            <FieldName>ckit</FieldName>
+            <DiffusionConstant>0.2</DiffusionConstant>
+            <DecayConstant>1e-04</DecayConstant>
+            <!--<ExtraTimesPerMCS>10</ExtraTimesPerMCS>-->
+         </DiffusionData>
+      </DiffusionField>
+   </Steppable>
+   
+   <Steppable Type="PIFInitializer">
+      <PIFName>Simulation/MOD_Feb06.piff</PIFName>
+   </Steppable>
+</CompuCell3D>
